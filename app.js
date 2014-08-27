@@ -5,8 +5,8 @@
 
 	app.controller('UserController', function() {
         // add your user code below
-
-
+	this.hello = "Hello, world";
+	this.u = u1;
 
 
 	// add your user code above	
@@ -14,7 +14,13 @@
 
 
         // add your form controller below
-
+	app.controller("UpdateFormController", function() {
+		this.data = {};
+		this.updateUser = function(user) {
+			user.u.name = this.data.name;
+			this.data = {}; //clears the form
+		}
+	});
 
         // add your form controller above
 
