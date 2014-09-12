@@ -1,5 +1,11 @@
 class UsersController < ApplicationController
-  # GET /users
+  before_filter :set_headers
+ 
+ def set_headers
+    header['Access-Control-Allow-Origin'] = '*' 
+ end
+
+# GET /users
   # GET /users.json
   def index
     @users = User.all
@@ -18,7 +24,7 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params(params[:user]))
+    @user = User.new(user_params(params))
 
     if @user.save
       render json: @user, status: :created, location: @user
@@ -90,9 +96,14 @@ class UsersController < ApplicationController
 
     render json: @feed
   end
+
+
   private
 
 	def user_params(params)
-		params.permit(:email, :password, :name, :blurb)
+		params.permit(:id, :email, :password, :name, :blurb)
 	end
-end
+
+  end
+  
+
