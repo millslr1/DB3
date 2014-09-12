@@ -1,0 +1,64 @@
+#login
+{
+	width: 40%;
+	float: left;
+	margin-left: 25%;
+	position: absolute;
+}
+
+#Signup
+{
+	width: 40%;
+	float: right;
+	margin-left: 15%;
+	position: relative;
+}
+
+
+#userDetails
+{
+	width: 40%;
+	float: left;
+	margin-left: 25%;
+	position: absolute;
+}
+
+#updateInfo
+{
+	width: 40%;
+	float: right;
+	margin-left: 15%;
+	position: relative;
+}
+
+#splatts
+{
+	width: 50%;
+	margin: 0 auto;
+}
+
+#textboxes
+{
+	width: 40%;
+	margin: 0 auto;
+}
+
+h1,h2
+{
+	text-align: center;
+}
+
+
+#navbar ul 
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+#navbar li 
+{
+    display: inline;
+    width: 100px;
+}

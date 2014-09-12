@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="splatter-web">
+	<head>
+		<title>Splatter User Information</title>
+		<link rel="stylesheet" href="splatter.css"/>
+		<script src="angular.min.js"></script>
+		<script src="angular-resource.js"></script>
+		<script src="app.js"></script>
+	</head>
+	<body>
+		<h1>Welcome to Splatter!</h1>
+		<div id="navbar">
+			<ul>
+				<li><a href="index.html">Login/Register</a></li>
+				<li><a href="userInfo.html">User Information</a></li>
+				<li><a href="splatts.html">Splatts</a></li>
+				<li><a href="followers.html">Follow User</a></li>
+			</ul>
+		</div>
+		<div ng-controller="UserController as user"><!--<form name="userDeleteForm" ng-submit="user.deleteUser()">
+			<input type="text" ng-model="user.data.id" /><br><br>
+			<input type="submit" value="Delete" />
+		</form>-->
+
+		<div id="userDetails">
+			<h3>User information</h3>
+			<p>Name:{{user.activeUser.name}}</p>
+			<p>Email:{{user.activeUser.email}}</p>
+			<p>Blurb:{{user.activeUser.blurb}}</p>
+
+		</div>
+
+		
+		<div id="updateInfo">
+			<h3>Update Information</h3>
+			<form name="updateform" ng-submit="user.updateUser()">
+				<input type="text" ng-model="user.data.name" /><br><br>
+				<input type="text" ng-model="user.data.blurb" /><br><br>
+				<input type="submit" value="Update user" />
+			</form>
+		</div>
+		</div>
+		
+	</body>
+</html>

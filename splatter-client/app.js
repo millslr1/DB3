@@ -6,8 +6,12 @@
 		return $resource('http://mills.sqrawler.com/api/users/:id.json', {id: '@id'}, 
 			{
 				'update': { method: 'PUT' },
-				'create': { method: 'POST' },
-				'delete': { method: 'DELETE' }
+				'save': { method: 'POST' },
+				'delete': { method: 'DELETE' },
+				'getSplatts': { method: 'GET', url:'http://mills.sqrawler.com/api/users/splatts-feed/:id.json' },
+				'addSplatt': { method: 'POST', url:'http://mills.sqrawler.com/api/splatts.json' },
+				'newFollow': { method: 'POST', url: 'http://mills.sqrawler.com/api/users/follows/' },
+				'unfollowUser': { method: 'DELETE', url: 'http://mills.sqrawler.com/api/users/follows/' }
 			});
 	});
 	
@@ -25,7 +29,8 @@
 		this.createUser = function() {
 			user = new User({name: this.data.name,
 				email: this.data.email,
-				password: this.data.password
+				password: this.data.password,
+				blurb: this.data.blurb
 			});
 			user.$save();
 		};
@@ -38,8 +43,28 @@
 		};
 
 		this.deleteUser = function() {
-			User.delete({id: this.data.id});
+			User.$delete({id: this.data.id});
 		};
+
+		this.feed = function() {
+			User.$getSplatts({id:this.activeUser.id});
+		};
+
+		this.newSplatt = function() {
+			User.$addSplatt = ({splatt: {body:this.data.body, user_id: this.activeUser.id}});
+			this.data = {};
+		};
+
+		this.follow = function() {
+			User.$newFollow({id:this.activeUser.id, follows_id:this.data.id});
+			this.data = {};
+		};
+
+		this.unfollow = function () {
+			User.$unfollowUser({id:this.activeUser.id, follows_id:this.data.id});
+			this.data = {};
+
+		}
 
 	});
 

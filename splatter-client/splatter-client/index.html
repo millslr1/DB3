@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="splatter-web">
+	<head>
+		<title>Basic Splatter Client</title>
+		<script src="angular.min.js"></script>
+		<script src="angular-resource.js"></script>
+		<script src="app.js"></script>
+	</head>
+	<body>
+		<div ng-controller="UserController as user">
+		<!-- Add your HTML and Angular code below -->
+		<form name="createNewUser" ng-submit="user.createUser()">
+			Name:<input type="text" ng-model="user.data.name" /><br><br>
+			Email:<input type="text" ng-model="user.data.email" /><br><br>
+			Password:<input type="text" ng-model="user.data.password" /><br><br>
+			<input type="submit" value="Create Account" />
+		</form>
+
+
+		<form name="userLoginForm" ng-submit="user.userLogin()">
+			<input type="text" ng-model="user.data.id" /><br><br>
+			<input type="submit" value="Login" />
+		</form>
+
+		<!--<form name="userDeleteForm" ng-submit="user.deleteUser()">
+			<input type="text" ng-model="user.data.id" /><br><br>
+			<input type="submit" value="Delete" />
+		</form>-->
+
+			<p>Name:{{user.activeUser.name}}</p>
+			<p>Email:{{user.activeUser.email}}</p>
+			<p>Blurb:{{user.activeUser.blurb}}</p>
+
+			<div ng-repeat="splatt in user.feed">
+				<p>{{splatt.body}}</p>
+				<p>{{splatt.created_at | date: 'dd/MM/yyyy h:mma'}}</p>
+			</div>
+
+		<form name="updateform" ng-submit="user.updateUser()">
+			<input type="text" ng-model="user.data.name" /><br><br>
+			<input type="text" ng-model="user.data.blurb" /><br><br>
+			<input type="submit" value="Update user" />
+		</form>
+
+                <!-- Add your HTML and Angular code above -->
+
+		</div>
+		
+	</body>
+</html>
+
