@@ -61,35 +61,92 @@ class UsersController < ApplicationController
 
   def show_followers
     @user = User.find(params[:id])
-    render json: @user.followed_by
+    render json: @user.followers
   end
 
   def add_follows
-    @follower = User.find(params[:id])
-    @followed = User.find(params[:follows_id])
-    if @follower.follows << @followed
-       head :no_content
+    @user = User.find(params[:id])
+    @follows = User.find(params[:follows_id])
+
+    if @user.follows << @follows and @follows.followers << @user
+	render json: @user.follows
     else
-       render json: @follower.errors, status: :unprocessable_entity
+	render json: @user.errors, status: :unprocessable_entity
     end
   end
 
   def delete_follows
-    @follower = User.find(params[:id])
-    @followed = User.find(params[:follows_id])
-    if @follower.follows.delete(@followed)
-       head :no_content
+    @user = User.find(params[:id])
+    @follows = User.find(params[:follows_id])
+    if @user.follows.delete(@follows) and @follows.followers.delete(@user)
+   	head :no_content
+	render json: @user.follows
     else
-       render json: @follower.errors, status: :unprocessable_entity
+	render json: @user.errors, status: :unprocessable_entity
     end
   end
 
   #GET /users/splatts-feed/1
   def splatts_feed
-    @feed = Splatt.find_by_sql("SELECT body, created_at FROM splatts JOIN follows ON follows.followed_id = splatts.user_id WHERE follows.follower_id = #{(params[:id])} ORDER BY created_at")
+#    @feed = Splatt.find_by_sql("SELECT body, created_at FROM splatts JOIN follows ON follows.followed_id = splatts.user_id WHERE follows.follower_id = #{(params[:id])} ORDER BY created_at")
 
-    render json: @feed
+ #   render json: @feed
+    map = %Q{ function() {
+  	if(this.splatts) {
+	   emit("feed", {"list": this.splatts})
+	}
+    }
+    }
+
+    reduce = %Q{ function(key, values) {
+	var myfeed = {"list": []};
+	values.forEach(function(v) {
+	    myfeed.list = myfeed.list.concat(v.list);
+	});
+    	return myfeed;
+    }
+    }
+
+    finalise = %Q{ function(key, val) {
+	var mylist = val.list;
+	if(mylist) {
+	    mylist.sort(function(a, b) {
+		return b.created_at - a.created_at});
+	}
+	return {"list": mylist};
+    }
+    }
+    user = User.find(params[:id])
+    result = User.in(id: user.follow_ids).map_reduce(map, reduce).out(inline: true).finalize(finalise)
+    render json: result.entries[0][:value][:list]
   end
+
+  #Map reduce function to count Splatts
+  def map_reduce
+
+    map = %Q{ function() {
+	var length = 0;
+	if(this.splatts) {
+		length = this.splatts.length
+	}
+	emit ("count", length);
+  	}
+    }
+
+    reduce = %Q{ function(key, val) {
+	var data = 0;
+	val.forEach(function(v) {
+		data += v;
+	})
+	return data;
+  	}
+    }
+#    User.map_reduce(map,reduce).out(inline: true).each do |x|
+#	puts x
+ #   end
+   User.map_reduce(map,reduce).out(inline: true)
+  end
+	
   private
 
 	def user_params(params)
