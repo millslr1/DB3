@@ -16,20 +16,25 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    @user = User.find(params[:id])
-
+    db = UserRepository.new(Riak::Client.new)
+    @user = db.find(params[:id])
     render json: @user
   end
 
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params(params))
+    @user = User.new
+    @user.email = params[:email]
+    @user.name = params[:name]
+    @user.password = params[:password]
+    @user.blurb = params[:blurb]
 
-    if @user.save
-      render json: @user, status: :created, location: @user
+    db = UserRepository.new(Riak::Client.new)
+    if db.save(@user)
+         render json: @user, status: :created, location: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+         render json: "error", status: :unprocessable_entity
     end
   end
 
