@@ -10,6 +10,9 @@ gem 'rails-api'
 gem 'sqlite3'
 
 
+gem 'riak-client'
+gem 'hashie'
+
 
 
 # To use ActiveModel has_secure_password
