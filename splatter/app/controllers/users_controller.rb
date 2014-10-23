@@ -60,9 +60,10 @@ class UsersController < ApplicationController
   end
 
   def splatts
-    @user = User.find(params[:id])
-
-    render json: @user.splatts
+    db = UserRepository.new(Riak::Client.new)
+    @user = db.find(params[:id])
+    db = SplattRepository.new(Riak::Client.new, @user)
+    render json: db.all
   end
 
   def show_follows

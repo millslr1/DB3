@@ -1,9 +1,9 @@
 Splatter::Application.routes.draw do
   resources :splatts, except: [:new, :edit]
 
-  get 'users/:id' => 'users#show', :constraints => { :id => /[\w\-\_\.\@]+/ }
+  get 'users/:id' => 'users#show', :constraints => { :id => /[0-9A-Za-z\-\_\.\@]+/ }
   resources :users, except: [:new, :edit]
-  get 'users/splatts/:id' => 'users#splatts'
+  get 'users/splatts/:id' => 'users#splatts', :constraints => { :id => /[0-9A-Za-z\-\_\.\@]+/ }
   get 'users/follows/:id' => 'users#show_follows'
   get 'users/followers/:id' => 'users#show_followers'
   post 'users/follows' => 'users#add_follows'
