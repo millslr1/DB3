@@ -6,11 +6,12 @@ class UserRepository
 	end
 	
 	def all
-
+	    users = @client.bucket(BUCKET)
 	end
 
 	def delete(user)
-
+	    @users = @client.find(BUCKET)
+	    @users.delete(user)
 	end
 
 	def find(key)
@@ -38,6 +39,58 @@ class UserRepository
 	end
 	
 	def update(user)
-	
+	    @key = user.email
+	    @users = @client.find(key)
+    	    @user.data = user
+	    @user.store
+	end
+
+	def follow(follower, followed)
+	    if follower.follows
+		follower.follows << followed.email
+	    else
+		follower.followed = [followed.email]
+	    end
+
+	    if followed.followers
+		followed.followers << follower.email
+	    else
+		followed.followers = [follows.email]
+	    end
+
+	    update(followed)
+	    update(follower)
+	end
+
+	def unfollow(follower, followed)
+	    if follower.follows
+		follower.follows.delete(followed.email)
+	    else
+		follower.follows = [followed.email]
+	    end
+
+	    if followed.followers
+		followed.followers.delete(follower.email)
+	    end
+
+	    update(followed)
+       	    update(follower)
+	end
+
+	def splatts_feed(key)
+	    @feed = [];
+	    @user = find(key)
+	    user_db = SplattRespository.new(@client, @user)
+	    @feed.concat(user_db.all)
+	    if @user.follows
+		@user.follows.each do |follower|
+		    flwr = find(follower)
+		    flwr_db = SplattRepository.new(@client, flwr)
+		    @feed.concat(flwr_db.all)
+	    	end
+	    end
+
+	    @feed.sort! { |a,b| a.updated_at <=> b.updated_at }
+	    @feed
 	end
 end

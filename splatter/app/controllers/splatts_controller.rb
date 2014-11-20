@@ -32,7 +32,21 @@ class SplattsController < ApplicationController
       render json: @splatt.errors, status: :unprocessable_entity
     end
   end
-
+  
+  def all
+    keys = @client.bucket(@bucket).keys
+    riak_list = @client.bucket(@bucket).get_many(keys)
+    results = []
+    riak_list.values.each do |splatt_obj|
+        splatt = Splatt.new
+     	splatt.id = splatt_obj.data['id']
+	splatt.body = splatt_obj.data['body']
+	splatt.created_at = splatt_obj.data['created_at']
+	results.push(splatt)
+    end
+    results
+  end
+  
   # PATCH/PUT /splatts/1
   # PATCH/PUT /splatts/1.json
 
